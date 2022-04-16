@@ -18,10 +18,15 @@ auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[])
     ma_device_config device_config;
     ma_device device;
 
-    auto filename = "/Users/k/Downloads/14 - Trying to Feel Alive.flac";
+    if (argc < 2) {
+        std::cerr << "No input file.\n";
+        return 1;
+    }
+
+    auto filename = argv[1];
     result = ma_decoder_init_file(filename, nullptr, &decoder);
     if (result != MA_SUCCESS)
-        return -2;
+        return 2;
 
     device_config = ma_device_config_init(ma_device_type_playback);
     device_config.playback.format   = decoder.outputFormat;
@@ -33,14 +38,14 @@ auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[])
     if (ma_device_init(nullptr, &device_config, &device) != MA_SUCCESS) {
         std::cerr << "Failed to open playback device.\n";
         ma_decoder_uninit(&decoder);
-        return -3;
+        return 3;
     }
 
     if (ma_device_start(&device) != MA_SUCCESS) {
         std::cerr << "Failed to start playback device.\n";
         ma_device_uninit(&device);
         ma_decoder_uninit(&decoder);
-        return -4;
+        return 4;
     }
 
     std::cout << "Press enter to quit...";

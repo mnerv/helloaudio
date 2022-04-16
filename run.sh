@@ -19,5 +19,5 @@ output="${input%.*}"
 
 c++ $compile_flags $input -o $bin/$output
 
-./bin/$output
+./bin/$output "${@:2}"
 
