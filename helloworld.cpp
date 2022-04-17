@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdint>
+#include <filesystem>
 
 #include "miniaudio.h"
 
@@ -7,19 +8,18 @@ auto data_callback(ma_device* p_device, void* p_output,
                   [[maybe_unused]]void const* p_input, ma_uint32 frame_count) -> void {
     ma_decoder* p_decoder = static_cast<ma_decoder*>(p_device->pUserData);
     if (p_device == nullptr) return;
-    ma_uint64 read_frames = 0;
-    ma_decoder_read_pcm_frames(p_decoder, p_output, frame_count, &read_frames);
+    ma_decoder_read_pcm_frames(p_decoder, p_output, frame_count, nullptr);
 }
 
 auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[]) -> std::int32_t {
-    std::cout << "Hello, miniaudio!\n";
     ma_result result;
     ma_decoder decoder;
     ma_device_config device_config;
     ma_device device;
 
     if (argc < 2) {
-        std::cerr << "No input file.\n";
+        std::cerr << "No input file.\n\n";
+        std::cout << "usage: helloworld [filename]\n";
         return 1;
     }
 
@@ -27,6 +27,8 @@ auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[])
     result = ma_decoder_init_file(filename, nullptr, &decoder);
     if (result != MA_SUCCESS)
         return 2;
+
+    ma_data_source_set_looping(&decoder, MA_TRUE);
 
     device_config = ma_device_config_init(ma_device_type_playback);
     device_config.playback.format   = decoder.outputFormat;
@@ -47,6 +49,9 @@ auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[])
         ma_decoder_uninit(&decoder);
         return 4;
     }
+
+    std::filesystem::path file{filename};
+    std::cout << "Now playing: " << file.filename() << "\n";
 
     std::cout << "Press enter to quit...";
     std::cin.get();

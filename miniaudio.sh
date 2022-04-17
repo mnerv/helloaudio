@@ -1,19 +1,21 @@
 #!/usr/bin/env sh
 set -e
 
-input=miniaudio.c
-output="${input%.*}"
+in=miniaudio.c
+out="${in%.*}"
+
+bin=bin
+obj=obj
 
 c_version=-std=c18
 warnings="-Wall -Wextra"
-include_dir="-I. -I${MINIAUDIO_PATH}"
-compile_flags="${c_version} ${warnings} ${include_dir}"
+includes="-I. -I${MINIAUDIO_PATH}"
+other="-O3"
+compile_flags="${c_version} ${warnings} ${includes} ${other}"
 
-binary=bin
-object=obj
-mkdir -p $binary
-mkdir -p $object
+mkdir -p $bin
+mkdir -p $obj
 
-cc $compile_flags -c $input -o $object/${output}
-ar rcs $binary/lib${output}.a $object/${output}
+cc $compile_flags -c $in -o $obj/${out}
+ar rcs $bin/lib${out}.a $obj/${out}
 
