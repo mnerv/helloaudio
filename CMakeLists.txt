@@ -1,30 +1,36 @@
 cmake_minimum_required(VERSION 3.12)
 project(helloworld VERSION 0.0.0)
 
-set(CMAKE_SUPPRESS_REGENERATION ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)         # Generate compile_commands.json for ccls
+set(CMAKE_SUPPRESS_REGENERATION ON)           # Remove ZERO_CHECK target
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)  # Group CMake targets inside a folder
+
+# Set output directory
 if (NOT DEFINED WORKSPACE_LOCATION)
     set(WORKSPACE_LOCATION "${PROJECT_SOURCE_DIR}")
 endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${WORKSPACE_LOCATION}/bin")
 
-# compilation flags
+# Compilation flags
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 17)
 
 # miniaudio library
 add_library(miniaudio STATIC IMPORTED)
-find_library(MINIAUDIO_LIB libminiaudio.a miniaudio.lib $ENV{MINIAUDIO_PATH} $ENV{MINIAUDIO_PATH}/lib)
+find_library(MINIAUDIO_LIB
+    NAMES libminiaudio.a miniaudio.lib
+    PATHS "$ENV{MINIAUDIO_PATH}/lib" "${PROJECT_SOURCE_DIR}/bin"
+)
 set_target_properties(miniaudio PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES $ENV{MINIAUDIO_PATH}
-    INTERFACE_LINK_DIRECTORIES $ENV{MINIAUDIO_PATH}/lib
-    IMPORTED_LOCATION ${MINIAUDIO_LIB}
+    INTERFACE_INCLUDE_DIRECTORIES "$ENV{MINIAUDIO_PATH}"
+    INTERFACE_LINK_DIRECTORIES "$ENV{MINIAUDIO_PATH}/lib"
+    IMPORTED_LOCATION "${MINIAUDIO_LIB}"
 )
 
 # warnings and errors
 if (NOT MSVC)
     string(JOIN " " CMAKE_CXX_FLAGS
+        ${CMAKE_CXX_FLAGS}
         "-Wall"
         "-Wextra"
         "-Wconversion"
@@ -33,21 +39,21 @@ if (NOT MSVC)
     )
 else()
     string(JOIN " " CMAKE_CXX_FLAGS
+        ${CMAKE_CXX_FLAGS}
         "/W4"
         "/WX"
     )
 endif()
 
-# source files and includes
+# Source files, include paths and library link
 file(GLOB TARGET_SOURCE_FILES
     "${PROJECT_SOURCE_DIR}/helloworld.cpp"
 )
 add_executable(${PROJECT_NAME} ${TARGET_SOURCE_FILES})
-include_directories(${PROJECT_NAME}
-    "${PROJECT_SOURCE_DIR}"
-    miniaudio
-)
+include_directories(${PROJECT_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME}
     miniaudio
 )
+
+# Show the file directory structure inside IDE
 source_group(TREE "${CMAKE_CURRENT_LIST_DIR}" FILES ${TARGET_SOURCE_FILES})
