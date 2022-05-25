@@ -8,7 +8,13 @@ bin=bin
 obj=obj
 
 c_version=-std=c18
-warnings="-Wall -Wextra"
+warnings="
+ -Wall
+ -Wextra
+ -Werror
+ -Wno-deprecated-declarations
+ -Wno-unused-but-set-variable
+"
 includes="-I. -I${MINIAUDIO_PATH}"
 other="-O3"
 compile_flags="${c_version} ${warnings} ${includes} ${other}"

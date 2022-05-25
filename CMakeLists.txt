@@ -4,6 +4,9 @@ project(helloworld VERSION 0.0.0)
 set(CMAKE_SUPPRESS_REGENERATION ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+if (NOT DEFINED WORKSPACE_LOCATION)
+    set(WORKSPACE_LOCATION "${PROJECT_SOURCE_DIR}")
+endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${WORKSPACE_LOCATION}/bin")
 
 # compilation flags
@@ -12,15 +15,12 @@ set(CMAKE_C_STANDARD 17)
 
 # miniaudio library
 add_library(miniaudio STATIC IMPORTED)
+find_library(MINIAUDIO_LIB libminiaudio.a miniaudio.lib $ENV{MINIAUDIO_PATH} $ENV{MINIAUDIO_PATH}/lib)
 set_target_properties(miniaudio PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES $ENV{MINIAUDIO_PATH}
     INTERFACE_LINK_DIRECTORIES $ENV{MINIAUDIO_PATH}/lib
+    IMPORTED_LOCATION ${MINIAUDIO_LIB}
 )
-if (NOT MSVC)
-    set_target_properties(miniaudio PROPERTIES IMPORTED_LOCATION libminiaudio.a)
-else()
-    set_target_properties(miniaudio PROPERTIES IMPORTED_LOCATION miniaudio.lib)
-endif()
 
 # warnings and errors
 if (NOT MSVC)
@@ -32,7 +32,7 @@ if (NOT MSVC)
         "-Werror"
     )
 else()
-    string(JOIN " " CMAKE_C_FLAGS
+    string(JOIN " " CMAKE_CXX_FLAGS
         "/W4"
         "/WX"
     )
