@@ -15,7 +15,7 @@ warnings="
  -Wno-deprecated-declarations
  -Wno-unused-but-set-variable
 "
-includes="-I. -I${MINIAUDIO_PATH}"
+includes="-I. -I${MINIAUDIO_SDK}"
 other="-O3"
 compile_flags="${c_version} ${warnings} ${includes} ${other}"
 
