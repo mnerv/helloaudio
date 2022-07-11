@@ -16,6 +16,10 @@ library_paths="-L./bin -L${MINIAUDIO_SDK}/lib"
 library="${library_paths} -lminiaudio"
 compile_flags="${cpp_version} ${warnings} ${include_dir} ${library}"
 
+# create directories
+mkdir -p $bin
+mkdir -p $obj
+
 # compile
 c++ $compile_flags $in -o $bin/$out
 
