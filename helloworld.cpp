@@ -19,7 +19,7 @@ auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[])
 
     if (argc < 2) {
         std::cerr << "No input file.\n\n";
-        std::cout << "usage: helloworld [filename]\n";
+        std::cout << "usage: " << argv[0] << " [path]\n";
         std::cout << "supported files: [mp3,flac,wav]\n";
         return 1;
     }
