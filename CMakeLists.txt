@@ -5,25 +5,22 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)         # Generate compile_commands.json f
 set(CMAKE_SUPPRESS_REGENERATION ON)           # Remove ZERO_CHECK target
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)  # Group CMake targets inside a folder
 
-# Set output directory
-if (NOT DEFINED WORKSPACE_LOCATION)
-    set(WORKSPACE_LOCATION "${PROJECT_SOURCE_DIR}")
-endif()
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${WORKSPACE_LOCATION}/bin")
-
 # Compilation flags
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 17)
+
+# Output location
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 
 # miniaudio library
 add_library(miniaudio STATIC IMPORTED)
 find_library(MINIAUDIO_LIB
     NAMES libminiaudio.a miniaudio.lib
-    PATHS "$ENV{MINIAUDIO_SDK}/lib" "${PROJECT_SOURCE_DIR}/bin"
+    PATHS "$ENV{MINIAUDIO_SDK}/build" "${PROJECT_SOURCE_DIR}/bin"
 )
 set_target_properties(miniaudio PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "$ENV{MINIAUDIO_SDK}"
-    INTERFACE_LINK_DIRECTORIES "$ENV{MINIAUDIO_SDK}/lib"
+    INTERFACE_LINK_DIRECTORIES "$ENV{MINIAUDIO_SDK}/build"
     IMPORTED_LOCATION "${MINIAUDIO_LIB}"
 )
 

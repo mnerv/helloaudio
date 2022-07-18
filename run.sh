@@ -12,7 +12,7 @@ warnings="-Wall -Wextra -Wpedantic -Werror -Wno-missing-field-initializers"
 input_file=$1
 target_dir=bin
 include_dir="-I. -I${MINIAUDIO_SDK}"
-library_paths="-L./bin -L${MINIAUDIO_SDK}/lib"
+library_paths="-L./bin -L${MINIAUDIO_SDK}/build"
 library="${library_paths} -lminiaudio"
 compile_flags="${cpp_version} ${warnings} ${include_dir} ${library}"
 
