@@ -8,15 +8,10 @@ auto data_callback(ma_device* p_device, void* p_output,
                   [[maybe_unused]]void const* p_input, ma_uint32 frame_count) -> void {
     ma_decoder* p_decoder = static_cast<ma_decoder*>(p_device->pUserData);
     if (p_device == nullptr) return;
-    ma_decoder_read_pcm_frames(p_decoder, p_output, frame_count, nullptr);
+    ma_data_source_read_pcm_frames(p_decoder, p_output, frame_count, nullptr);
 }
 
 auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[]) -> std::int32_t {
-    ma_result result;
-    ma_decoder decoder;
-    ma_device_config device_config;
-    ma_device device;
-
     if (argc < 2) {
         std::cerr << "No input file.\n\n";
         std::cout << "usage: " << argv[0] << " [path]\n";
@@ -25,19 +20,20 @@ auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[])
     }
 
     auto filename = argv[1];
-    result = ma_decoder_init_file(filename, nullptr, &decoder);
-    if (result != MA_SUCCESS)
+    ma_decoder decoder{};
+    if (ma_decoder_init_file(filename, nullptr, &decoder) != MA_SUCCESS)
         return 2;
 
     ma_data_source_set_looping(&decoder, MA_TRUE);
 
-    device_config = ma_device_config_init(ma_device_type_playback);
+    auto device_config = ma_device_config_init(ma_device_type_playback);
     device_config.playback.format   = decoder.outputFormat;
     device_config.playback.channels = decoder.outputChannels;
     device_config.sampleRate        = decoder.outputSampleRate;
     device_config.dataCallback      = data_callback;
     device_config.pUserData         = &decoder;
 
+    ma_device device{};
     if (ma_device_init(nullptr, &device_config, &device) != MA_SUCCESS) {
         std::cerr << "Failed to open playback device.\n";
         ma_decoder_uninit(&decoder);
