@@ -4,8 +4,8 @@ set -e
 in=miniaudio.c
 out="${in%.*}"
 
-bin=bin
-obj=obj
+bin=build
+obj=$bin/obj
 
 c_version=-std=c18
 warnings="
@@ -22,6 +22,7 @@ compile_flags="${c_version} ${warnings} ${includes} ${other}"
 mkdir -p $bin
 mkdir -p $obj
 
-cc $compile_flags -c $in -o $obj/${out}
-ar rcs $bin/lib${out}.a $obj/${out}
+ccache cc $compile_flags -c $in -o $obj/${out}
+ccache ar rcs $bin/lib${out}.a $obj/${out}
+ccache cp ${MINIAUDIO_SDK}/miniaudio.h $bin
 

@@ -6,6 +6,8 @@ Playing audio with C++ using `miniaudio` library.
 
   - [miniaudio](https://github.com/mackron/miniaudio) or [mononerv/miniaudio](https://github.com/mononerv/miniaudio)
 
+The miniaudio build script requires `ccache` to be installed on your system.
+
 ## Build
 
 There are two ways to build this project `cmake` or `shellscript`. Both requires you to download [miniaudio](https://github.com/mackron/miniaudio) (or [mononerv/miniaudio](https://github.com/mononerv/miniaudio)). The `cmake` instructions requires you to have a built `miniaudio` static library. Both instructions requires you to define `MINIAUDIO_SDK` environment variables on your system that points to where the library header file exist.
