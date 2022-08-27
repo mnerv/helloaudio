@@ -2,6 +2,10 @@
 #include <cstdint>
 #include <filesystem>
 
+#include <vector>
+#include <unordered_map>
+#include <string>
+
 #include "miniaudio.h"
 
 auto data_callback(ma_device* p_device, void* p_output,
@@ -11,7 +15,7 @@ auto data_callback(ma_device* p_device, void* p_output,
     ma_data_source_read_pcm_frames(p_decoder, p_output, frame_count, nullptr);
 }
 
-auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[]) -> std::int32_t {
+auto main([[maybe_unused]]int argc, [[maybe_unused]]char const* argv[]) -> int {
     if (argc < 2) {
         std::cerr << "No input file.\n\n";
         std::cout << "usage: " << argv[0] << " [path]\n";
@@ -24,7 +28,7 @@ auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[])
     if (ma_decoder_init_file(filename, nullptr, &decoder) != MA_SUCCESS)
         return 2;
 
-    ma_data_source_set_looping(&decoder, MA_TRUE);
+    //ma_data_source_set_looping(&decoder, MA_TRUE);
 
     auto device_config = ma_device_config_init(ma_device_type_playback);
     device_config.playback.format   = decoder.outputFormat;
